@@ -38,21 +38,28 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 1.7.1
  */
 class ImageLoaderEngine {
-
+	//ImageLoader的配置信息
 	final ImageLoaderConfiguration configuration;
-
+	//用于执行从源获取图片任务
 	private Executor taskExecutor;
+	//用于执行从缓存获取图片
 	private Executor taskExecutorForCachedImages;
+	//任务分发线程池，任务为LoadAndDisplayTask和ProgressAndDisplayTask，因为只需要分发至上面的两个Executor去执行任务，不存在较耗时和阻塞
+	//操作，所以用无并发数（int最大值）限制的线程池
 	private Executor taskDistributor;
-
+	//IamgeAware与内存缓存key对应的map，key为ImageAware的id，value为内存缓存的key
 	private final Map<Integer, String> cacheKeysForImageAwares = Collections
 			.synchronizedMap(new HashMap<Integer, String>());
+	//图片正在加载的重入锁map，key为图片的uri，value为标识其正在加载的重入锁
 	private final Map<String, ReentrantLock> uriLocks = new WeakHashMap<String, ReentrantLock>();
-
+	//是否被暂停。if true，则所有新的加载或者显示任务都会等待直到取消暂停
 	private final AtomicBoolean paused = new AtomicBoolean(false);
+	//是否不允许访问网络，如果为true，通过ImageLoadingListener.onLoadingFailed(…)获取图片，则所有不在缓存中需要网络访问的请求都会失败，
+	// 返回失败原因为网络访问被禁止。
 	private final AtomicBoolean networkDenied = new AtomicBoolean(false);
+	//是否为慢网络情况，if true，则自动调用SlowNetworkImageDownloader下载图片
 	private final AtomicBoolean slowNetwork = new AtomicBoolean(false);
-
+	//暂停的等待锁，可在engine被暂停后调用这个锁等待
 	private final Object pauseLock = new Object();
 
 	ImageLoaderEngine(ImageLoaderConfiguration configuration) {
@@ -185,11 +192,11 @@ class ImageLoaderEngine {
 		cacheKeysForImageAwares.clear();
 		uriLocks.clear();
 	}
-
+	//立即执行某个任务
 	void fireCallback(Runnable r) {
 		taskDistributor.execute(r);
 	}
-
+	//得到某个uri的重入锁
 	ReentrantLock getLockForUri(String uri) {
 		ReentrantLock lock = uriLocks.get(uri);
 		if (lock == null) {
