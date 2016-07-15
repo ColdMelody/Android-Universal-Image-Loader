@@ -31,6 +31,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <b>NOTE:</b> This cache uses strong and weak references for stored Bitmaps. Strong references - for limited count of
  * Bitmaps (depends on cache size), weak references - for all other cached Bitmaps.
  *
+ * LimitedMemoryCache子类都有个问题，就是Bitmap虽然通过WeakReference<Bitmap>包装，但实际根本不会被虚拟机回收，因为他们子类中同时都保留了Bitmap的强引用。
+ * 大都是 UIL 早期实现的版本，不推荐使用。
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  * @see BaseMemoryCache
  * @since 1.0.0
@@ -68,6 +70,7 @@ public abstract class LimitedMemoryCache extends BaseMemoryCache {
 		int sizeLimit = getSizeLimit();
 		int curCacheSize = cacheSize.get();
 		if (valueSize < sizeLimit) {
+			//判断总体大小是否超出了上限，是则循环删除直至小于上限，删除的原则根据抽象方法removeNext()来决定
 			while (curCacheSize + valueSize > sizeLimit) {
 				Bitmap removedValue = removeNext();
 				if (hardCache.remove(removedValue)) {

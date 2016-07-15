@@ -125,7 +125,7 @@ public class ImageViewAware extends ViewAware {
 	protected void setImageBitmapInto(Bitmap bitmap, View view) {
 		((ImageView) view).setImageBitmap(bitmap);
 	}
-
+	//通过反射获取值
 	private static int getImageViewFieldValue(Object object, String fieldName) {
 		int value = 0;
 		try {

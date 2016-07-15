@@ -59,6 +59,7 @@ public abstract class ViewAware implements ImageAware {
 	 *                            <a href="https://github.com/nostra13/Android-Universal-Image-Loader/issues/376">this</a>.
 	 *                            But it helps to save memory because memory cache keeps bitmaps of actual (less in
 	 *                            general) size.
+	 *                            如果为true会导致一个问题，View在还没有初始化完成时加载图片，这时它的真实宽高为 0，会取它LayoutParams的宽高，而图片缓存的 key 与这个宽高有关，所以当View初始化完成再次需要加载该图片时，getWidth()和getHeight()返回的宽高都已经变化，缓存 key 不一样，从而导致缓存命中失败会再次从网络下载一次图片。可通过ImageLoaderConfiguration.Builder.denyCacheImageMultipleSizesInMemory()设置不允许内存缓存缓存一张图片的多个尺寸
 	 *                            <p/>
 	 *                            <b>false</b> - then {@link #getWidth()} and {@link #getHeight()} will <b>NOT</b>
 	 *                            consider actual size of View, just layout parameters. <br /> If you set 'false'

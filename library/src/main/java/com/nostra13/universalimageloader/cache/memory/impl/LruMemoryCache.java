@@ -33,6 +33,10 @@ public class LruMemoryCache implements MemoryCache {
 			throw new IllegalArgumentException("maxSize <= 0");
 		}
 		this.maxSize = maxSize;
+		//以new LinkedHashMap<String, Bitmap>(0, 0.75f, true)作为缓存池。
+		// LinkedHashMap 第三个参数表示是否需要根据访问顺序(accessOrder)排序，
+		// true 表示根据accessOrder排序，最近访问的跟最新加入的一样放到最后面，false 表示根据插入顺序排序。
+		// 这里为 true 且缓存满时始终删除第一个元素，即始终删除最近最少访问的元素。
 		this.map = new LinkedHashMap<String, Bitmap>(0, 0.75f, true);
 	}
 

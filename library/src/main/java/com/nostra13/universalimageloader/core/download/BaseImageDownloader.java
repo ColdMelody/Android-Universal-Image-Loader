@@ -114,6 +114,7 @@ public class BaseImageDownloader implements ImageDownloader {
 		HttpURLConnection conn = createConnection(imageUri, extra);
 
 		int redirectCount = 0;
+		//支持response code 为 3xx 的重定向
 		while (conn.getResponseCode() / 100 == 3 && redirectCount < MAX_REDIRECT_COUNT) {
 			conn = createConnection(conn.getHeaderField("Location"), extra);
 			redirectCount++;
@@ -124,6 +125,7 @@ public class BaseImageDownloader implements ImageDownloader {
 			imageStream = conn.getInputStream();
 		} catch (IOException e) {
 			// Read all data to allow reuse connection (http://bit.ly/1ad35PY)
+			//在发生异常时会调用conn.getErrorStream()继续读取 Error Stream，这是为了利于网络连接回收及复用
 			IoUtils.readAndCloseStream(conn.getErrorStream());
 			throw e;
 		}

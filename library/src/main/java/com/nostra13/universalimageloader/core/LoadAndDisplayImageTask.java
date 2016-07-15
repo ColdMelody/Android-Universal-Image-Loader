@@ -222,6 +222,7 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
 				checkTaskNotActual();
 				bitmap = decodeImage(Scheme.FILE.wrap(imageFile.getAbsolutePath()));
 			}
+			//从网络上下载
 			if (bitmap == null || bitmap.getWidth() <= 0 || bitmap.getHeight() <= 0) {
 				L.d(LOG_LOAD_IMAGE_FROM_NETWORK, memoryCacheKey);
 				loadedFrom = LoadedFrom.NETWORK;

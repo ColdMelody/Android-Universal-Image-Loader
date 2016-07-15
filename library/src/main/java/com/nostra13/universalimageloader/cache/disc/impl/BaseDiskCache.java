@@ -45,8 +45,9 @@ public abstract class BaseDiskCache implements DiskCache {
 
 	private static final String ERROR_ARG_NULL = " argument must be not null";
 	private static final String TEMP_IMAGE_POSTFIX = ".tmp";
-
+	//图片缓存文件夹
 	protected final File cacheDir;
+	//若cacheDir不可用，则使用备用文件夹
 	protected final File reserveCacheDir;
 
 	protected final FileNameGenerator fileNameGenerator;
@@ -100,7 +101,9 @@ public abstract class BaseDiskCache implements DiskCache {
 
 	@Override
 	public boolean save(String imageUri, InputStream imageStream, IoUtils.CopyListener listener) throws IOException {
+		//获得目标文件
 		File imageFile = getFile(imageUri);
+		//“.tmp”后缀
 		File tmpFile = new File(imageFile.getAbsolutePath() + TEMP_IMAGE_POSTFIX);
 		boolean loaded = false;
 		try {
@@ -111,6 +114,7 @@ public abstract class BaseDiskCache implements DiskCache {
 				IoUtils.closeSilently(os);
 			}
 		} finally {
+			//写入缓存文件之后会对文件进行重命名
 			if (loaded && !tmpFile.renameTo(imageFile)) {
 				loaded = false;
 			}

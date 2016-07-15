@@ -59,9 +59,11 @@ final class DisplayBitmapTask implements Runnable {
 
 	@Override
 	public void run() {
+		//先判断下是否被GC
 		if (imageAware.isCollected()) {
 			L.d(LOG_TASK_CANCELLED_IMAGEAWARE_COLLECTED, memoryCacheKey);
 			listener.onLoadingCancelled(imageUri, imageAware.getWrappedView());
+			//是否被复用
 		} else if (isViewWasReused()) {
 			L.d(LOG_TASK_CANCELLED_IMAGEAWARE_REUSED, memoryCacheKey);
 			listener.onLoadingCancelled(imageUri, imageAware.getWrappedView());

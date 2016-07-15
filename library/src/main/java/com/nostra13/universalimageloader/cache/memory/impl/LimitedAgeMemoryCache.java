@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Decorator for {@link MemoryCache}. Provides special feature for cache: if some cached object age exceeds defined
  * value then this object will be removed from cache.
- *
+ * 限制了对象的最长存活周期，装饰者模式
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  * @see MemoryCache
  * @since 1.3.1
