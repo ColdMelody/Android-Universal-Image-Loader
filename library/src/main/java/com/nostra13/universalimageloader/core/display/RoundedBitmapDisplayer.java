@@ -25,6 +25,7 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 /**
  * Can display bitmap with rounded corners. This implementation works only with ImageViews wrapped
  * in ImageViewAware.
+ * 圆角
  * <br />
  * This implementation is inspired by
  * <a href="http://www.curious-creature.org/2012/12/11/android-recipe-1-image-with-rounded-corners/">

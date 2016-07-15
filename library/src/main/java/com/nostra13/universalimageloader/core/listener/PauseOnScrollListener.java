@@ -27,7 +27,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * fling). It prevents redundant loadings.<br />
  * Set it to your list view's {@link AbsListView#setOnScrollListener(OnScrollListener) setOnScrollListener(...)}.<br />
  * This listener can wrap your custom {@linkplain OnScrollListener listener}.
- *
+ * 可以在View滚动中暂停图片的加载
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  * @since 1.7.0
  */

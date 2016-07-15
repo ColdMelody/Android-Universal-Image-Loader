@@ -141,6 +141,7 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
 
 				if (options.shouldPreProcess()) {
 					L.d(LOG_PREPROCESS_IMAGE, memoryCacheKey);
+					//若是想要实现预处理，应该自己实现BitmaoProcessor接口
 					bmp = options.getPreProcessor().process(bmp);
 					if (bmp == null) {
 						L.e(ERROR_PRE_PROCESSOR_NULL, memoryCacheKey);
@@ -158,6 +159,7 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
 
 			if (bmp != null && options.shouldPostProcess()) {
 				L.d(LOG_POSTPROCESS_IMAGE, memoryCacheKey);
+				//若是想要实现后处理，应自己实现BitmapProcessor接口
 				bmp = options.getPostProcessor().process(bmp);
 				if (bmp == null) {
 					L.e(ERROR_POST_PROCESSOR_NULL, memoryCacheKey);

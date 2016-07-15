@@ -34,6 +34,7 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 /**
  * Can display bitmap cropped by a circle. This implementation works only with ImageViews wrapped
  * in ImageViewAware.
+ * 圆形
  * <br />
  * If this implementation doesn't meet your needs then consider
  * <a href="https://github.com/vinc3m1/RoundedImageView">RoundedImageView</a> or

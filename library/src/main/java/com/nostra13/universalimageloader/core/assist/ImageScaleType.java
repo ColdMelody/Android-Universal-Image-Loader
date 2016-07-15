@@ -17,7 +17,7 @@ package com.nostra13.universalimageloader.core.assist;
 
 /**
  * Type of image scaling during decoding.
- *
+ * Image的缩放类型
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  * @since 1.5.0
  */
@@ -25,6 +25,7 @@ public enum ImageScaleType {
 	/** Image won't be scaled */
 	NONE,
 	/**
+	 * 根据需要以整数倍缩小图片，使其尺寸不超过Texture可接受的最大尺寸
 	 * Image will be scaled down only if image size is greater than
 	 * {@linkplain javax.microedition.khronos.opengles.GL10#GL_MAX_TEXTURE_SIZE maximum acceptable texture size}.
 	 * Usually it's 2048x2048.<br />
@@ -34,6 +35,7 @@ public enum ImageScaleType {
 	 */
 	NONE_SAFE,
 	/**
+	 * 根据需要以2的n次幂缩小图片
 	 * Image will be reduces 2-fold until next reduce step make image smaller target size.<br />
 	 * It's <b>fast</b> type and it's preferable for usage in lists/grids/galleries (and other
 	 * {@linkplain android.widget.AdapterView adapter-views}) .<br />
@@ -42,6 +44,7 @@ public enum ImageScaleType {
 	 */
 	IN_SAMPLE_POWER_OF_2,
 	/**
+	 * 根据需要以整数倍缩小图片，使其尺寸不超过目标大小
 	 * Image will be subsampled in an integer number of times (1, 2, 3, ...). Use it if memory economy is quite
 	 * important.<br />
 	 * Relates to {@link android.graphics.BitmapFactory.Options#inSampleSize}<br />
@@ -49,6 +52,7 @@ public enum ImageScaleType {
 	 */
 	IN_SAMPLE_INT,
 	/**
+	 * 根据需要缩小图片到宽或高有一个与目标尺寸一致
 	 * Image will scaled-down exactly to target size (scaled width or height or both will be equal to target size;
 	 * depends on {@linkplain android.widget.ImageView.ScaleType ImageView's scale type}). Use it if memory economy is
 	 * critically important.<br />
@@ -62,6 +66,7 @@ public enum ImageScaleType {
 	 */
 	EXACTLY,
 	/**
+	 * 根据需要缩放图片的宽或高有一个与目标尺寸一致
 	 * Image will scaled exactly to target size (scaled width or height or both will be equal to target size; depends on
 	 * {@linkplain android.widget.ImageView.ScaleType ImageView's scale type}). Use it if memory economy is critically
 	 * important.<br />

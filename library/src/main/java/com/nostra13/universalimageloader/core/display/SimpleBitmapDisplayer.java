@@ -21,7 +21,7 @@ import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 
 /**
  * Just displays {@link Bitmap} in {@link com.nostra13.universalimageloader.core.imageaware.ImageAware}
- *
+ * 直接显示图片，不做任何处理
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  * @since 1.5.6
  */

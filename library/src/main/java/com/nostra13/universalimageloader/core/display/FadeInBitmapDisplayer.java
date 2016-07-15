@@ -25,7 +25,7 @@ import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 
 /**
  * Displays image with "fade in" animation
- *
+ * 淡入方式显示
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com), Daniel Martí
  * @since 1.6.4
  */

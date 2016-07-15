@@ -17,7 +17,7 @@ package com.nostra13.universalimageloader.core.assist;
 
 /**
  * Present width and height values
- *
+ * 表示图片的宽高值，典型的不可变类
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  * @since 1.0.0
  */

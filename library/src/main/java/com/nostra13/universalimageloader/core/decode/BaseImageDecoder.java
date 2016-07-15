@@ -70,16 +70,19 @@ public class BaseImageDecoder implements ImageDecoder {
 	public Bitmap decode(ImageDecodingInfo decodingInfo) throws IOException {
 		Bitmap decodedBitmap;
 		ImageFileInfo imageInfo;
-
+		//先获取图片
 		InputStream imageStream = getImageStream(decodingInfo);
 		if (imageStream == null) {
 			L.e(ERROR_NO_IMAGE_STREAM, decodingInfo.getImageKey());
 			return null;
 		}
 		try {
+			//获取图片相关信息
 			imageInfo = defineImageSizeAndRotation(imageStream, decodingInfo);
 			imageStream = resetStream(imageStream, decodingInfo);
+			//获取图片的缩放比例
 			Options decodingOptions = prepareDecodingOptions(imageInfo.imageSize, decodingInfo);
+			//将InputStream转化为Bitmap
 			decodedBitmap = BitmapFactory.decodeStream(imageStream, null, decodingOptions);
 		} finally {
 			IoUtils.closeSilently(imageStream);
@@ -88,16 +91,17 @@ public class BaseImageDecoder implements ImageDecoder {
 		if (decodedBitmap == null) {
 			L.e(ERROR_CANT_DECODE_IMAGE, decodingInfo.getImageKey());
 		} else {
+			//根据参数将图片缩放、旋转、翻转为合适的样子
 			decodedBitmap = considerExactScaleAndOrientatiton(decodedBitmap, decodingInfo, imageInfo.exif.rotation,
 					imageInfo.exif.flipHorizontal);
 		}
 		return decodedBitmap;
 	}
-
+	//调用ImageDownloader获取图片
 	protected InputStream getImageStream(ImageDecodingInfo decodingInfo) throws IOException {
 		return decodingInfo.getDownloader().getStream(decodingInfo.getImageUri(), decodingInfo.getExtraForDownloader());
 	}
-
+	//得到图片真实大小以及 Exif 信息(设置考虑 Exif 的条件下)
 	protected ImageFileInfo defineImageSizeAndRotation(InputStream imageStream, ImageDecodingInfo decodingInfo)
 			throws IOException {
 		Options options = new Options();

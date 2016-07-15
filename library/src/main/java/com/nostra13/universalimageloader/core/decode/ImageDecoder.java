@@ -30,7 +30,7 @@ public interface ImageDecoder {
 
 	/**
 	 * Decodes image to {@link Bitmap} according target size and other parameters.
-	 *
+	 * 参数由ImageDecodingInfo获得
 	 * @param imageDecodingInfo
 	 * @return
 	 * @throws IOException
