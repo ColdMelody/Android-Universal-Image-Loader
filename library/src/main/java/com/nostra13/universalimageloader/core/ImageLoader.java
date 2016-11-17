@@ -233,6 +233,7 @@ public class ImageLoader {
 	 */
 	public void displayImage(String uri, ImageAware imageAware, DisplayImageOptions options,
 			ImageSize targetSize, ImageLoadingListener listener, ImageLoadingProgressListener progressListener) {
+		//检查配置
 		checkConfiguration();
 		if (imageAware == null) {
 			throw new IllegalArgumentException(ERROR_WRONG_ARGUMENTS);
@@ -245,6 +246,7 @@ public class ImageLoader {
 		}
 
 		if (TextUtils.isEmpty(uri)) {
+			//空的uri，从链接队列中移除
 			engine.cancelDisplayTaskFor(imageAware);
 			listener.onLoadingStarted(uri, imageAware.getWrappedView());
 			if (options.shouldShowImageForEmptyUri()) {
@@ -257,34 +259,42 @@ public class ImageLoader {
 		}
 
 		if (targetSize == null) {
+			//没设置尺寸，取图片的最大尺寸
 			targetSize = ImageSizeUtils.defineTargetSizeForView(imageAware, configuration.getMaxImageSize());
 		}
+		//产生key
 		String memoryCacheKey = MemoryCacheUtils.generateKey(uri, targetSize);
+		//以imageAware的id为键，key位置放入map中
 		engine.prepareDisplayTaskFor(imageAware, memoryCacheKey);
 
 		listener.onLoadingStarted(uri, imageAware.getWrappedView());
-
+		//先从缓存中查找
 		Bitmap bmp = configuration.memoryCache.get(memoryCacheKey);
 		if (bmp != null && !bmp.isRecycled()) {
 			L.d(LOG_LOAD_IMAGE_FROM_MEMORY_CACHE, memoryCacheKey);
-
+			//需要处理下
 			if (options.shouldPostProcess()) {
 				ImageLoadingInfo imageLoadingInfo = new ImageLoadingInfo(uri, imageAware, targetSize, memoryCacheKey,
 						options, listener, progressListener, engine.getLockForUri(uri));
 				ProcessAndDisplayImageTask displayTask = new ProcessAndDisplayImageTask(engine, bmp, imageLoadingInfo,
 						defineHandler(options));
 				if (options.isSyncLoading()) {
+					//同步的话直接执行线程
 					displayTask.run();
 				} else {
+					//否则分发下去
 					engine.submit(displayTask);
 				}
 			} else {
+				//不需要处理，直接显示
 				options.getDisplayer().display(bmp, imageAware, LoadedFrom.MEMORY_CACHE);
 				listener.onLoadingComplete(uri, imageAware.getWrappedView(), bmp);
 			}
 		} else {
+			//显示正在load图片
 			if (options.shouldShowImageOnLoading()) {
 				imageAware.setImageDrawable(options.getImageOnLoading(configuration.resources));
+				//在load之前重置view
 			} else if (options.isResetViewBeforeLoading()) {
 				imageAware.setImageDrawable(null);
 			}
@@ -525,6 +535,7 @@ public class ImageLoader {
 		}
 
 		NonViewAware imageAware = new NonViewAware(uri, targetImageSize, ViewScaleType.CROP);
+		//最后还是调用displayImage
 		displayImage(uri, imageAware, options, listener, progressListener);
 	}
 

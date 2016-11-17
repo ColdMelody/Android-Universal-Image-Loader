@@ -73,6 +73,7 @@ public final class IoUtils {
 
 		final byte[] bytes = new byte[bufferSize];
 		int count;
+		//这个就是打断的方法了
 		if (shouldStopLoading(listener, current, total)) return false;
 		while ((count = is.read(bytes, 0, bufferSize)) != -1) {
 			os.write(bytes, 0, count);

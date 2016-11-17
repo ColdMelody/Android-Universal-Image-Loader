@@ -42,7 +42,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Presents load'n'display image task. Used to load image from Internet or file system, decode it to {@link Bitmap}, and
  * display it in {@link com.nostra13.universalimageloader.core.imageaware.ImageAware} using {@link DisplayBitmapTask}.
- *
+ * 从网络上加载图片并显示的线程
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  * @see ImageLoaderConfiguration
  * @see ImageLoadingInfo
@@ -79,9 +79,13 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
 
 	// Helper references
 	private final ImageLoaderConfiguration configuration;
+	//下载器
 	private final ImageDownloader downloader;
+	//无网络
 	private final ImageDownloader networkDeniedDownloader;
+	//慢网络
 	private final ImageDownloader slowNetworkDownloader;
+	//解析器
 	private final ImageDecoder decoder;
 	final String uri;
 	private final String memoryCacheKey;
@@ -119,7 +123,7 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
 	public void run() {
 		if (waitIfPaused()) return;
 		if (delayIfNeed()) return;
-
+		//暂停的重入锁
 		ReentrantLock loadFromUriLock = imageLoadingInfo.loadFromUriLock;
 		L.d(LOG_START_DISPLAY_IMAGE_TASK, memoryCacheKey);
 		if (loadFromUriLock.isLocked()) {
@@ -129,10 +133,12 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
 		loadFromUriLock.lock();
 		Bitmap bmp;
 		try {
+			//判断下view的情况
 			checkTaskNotActual();
 
 			bmp = configuration.memoryCache.get(memoryCacheKey);
 			if (bmp == null || bmp.isRecycled()) {
+				//内存中没有，从其他地方加载
 				bmp = tryLoadBitmap();
 				if (bmp == null) return; // listener callback already was fired
 
@@ -149,10 +155,12 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
 				}
 
 				if (bmp != null && options.isCacheInMemory()) {
+					//放入内存中
 					L.d(LOG_CACHE_IMAGE_IN_MEMORY, memoryCacheKey);
 					configuration.memoryCache.put(memoryCacheKey, bmp);
 				}
 			} else {
+				//内存中存在bitmap，标记一下
 				loadedFrom = LoadedFrom.MEMORY_CACHE;
 				L.d(LOG_GET_IMAGE_FROM_MEMORY_CACHE_AFTER_WAITING, memoryCacheKey);
 			}
@@ -173,7 +181,7 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
 		} finally {
 			loadFromUriLock.unlock();
 		}
-
+		//显示bitmap
 		DisplayBitmapTask displayBitmapTask = new DisplayBitmapTask(bmp, imageLoadingInfo, engine, loadedFrom);
 		runTask(displayBitmapTask, syncLoading, handler, engine);
 	}
@@ -230,7 +238,7 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
 				loadedFrom = LoadedFrom.NETWORK;
 
 				String imageUriForDecoding = uri;
-				if (options.isCacheOnDisk() && tryCacheImageOnDisk()) {
+				if (options.isCacheOnDisk() && tryCacheImageOnDisk()/*非常阴险的把现在方法放在了这*/) {
 					imageFile = configuration.diskCache.get(uri);
 					if (imageFile != null) {
 						imageUriForDecoding = Scheme.FILE.wrap(imageFile.getAbsolutePath());
@@ -274,6 +282,7 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
 
 		boolean loaded;
 		try {
+			//下载bitmap，放入本地缓存
 			loaded = downloadImage();
 			if (loaded) {
 				int width = configuration.maxImageWidthForDiskCache;
@@ -297,6 +306,7 @@ final class LoadAndDisplayImageTask implements Runnable, IoUtils.CopyListener {
 			return false;
 		} else {
 			try {
+				//下载并保存至本地缓存，在BaseDiskCache中实现
 				return configuration.diskCache.save(uri, is, this);
 			} finally {
 				IoUtils.closeSilently(is);

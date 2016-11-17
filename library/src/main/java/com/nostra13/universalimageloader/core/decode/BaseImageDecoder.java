@@ -70,7 +70,8 @@ public class BaseImageDecoder implements ImageDecoder {
 	public Bitmap decode(ImageDecodingInfo decodingInfo) throws IOException {
 		Bitmap decodedBitmap;
 		ImageFileInfo imageInfo;
-		//先获取图片
+		//先获取图片，这个是根据decodingInfo中的imageUri获取到Scheme，然后根据Scheme选择从什么地方读取流，
+		//在这个地方，是从本地缓存中读取流，读到内存中做处理
 		InputStream imageStream = getImageStream(decodingInfo);
 		if (imageStream == null) {
 			L.e(ERROR_NO_IMAGE_STREAM, decodingInfo.getImageKey());
@@ -189,6 +190,14 @@ public class BaseImageDecoder implements ImageDecoder {
 		return getImageStream(decodingInfo);
 	}
 
+	/**
+	 * 对Bitmap做处理，缩放，翻转，旋转
+	 * @param subsampledBitmap
+	 * @param decodingInfo
+	 * @param rotation
+	 * @param flipHorizontal
+     * @return
+     */
 	protected Bitmap considerExactScaleAndOrientatiton(Bitmap subsampledBitmap, ImageDecodingInfo decodingInfo,
 			int rotation, boolean flipHorizontal) {
 		Matrix m = new Matrix();

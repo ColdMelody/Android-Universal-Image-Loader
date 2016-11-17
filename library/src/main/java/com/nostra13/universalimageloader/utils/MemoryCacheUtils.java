@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * Utility for generating of keys for memory cache, key comparing and other work with memory cache
- *
+ * 用于产生缓存的key
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  * @since 1.6.3
  */

@@ -47,7 +47,7 @@ class ImageLoaderEngine {
 	//任务分发线程池，任务为LoadAndDisplayTask和ProgressAndDisplayTask，因为只需要分发至上面的两个Executor去执行任务，不存在较耗时和阻塞
 	//操作，所以用无并发数（int最大值）限制的线程池
 	private Executor taskDistributor;
-	//IamgeAware与内存缓存key对应的map，key为ImageAware的id，value为内存缓存的key
+	//ImageAware与内存缓存key对应的map，key为ImageAware的id，value为内存缓存的key
 	private final Map<Integer, String> cacheKeysForImageAwares = Collections
 			.synchronizedMap(new HashMap<Integer, String>());
 	//图片正在加载的重入锁map，key为图片的uri，value为标识其正在加载的重入锁

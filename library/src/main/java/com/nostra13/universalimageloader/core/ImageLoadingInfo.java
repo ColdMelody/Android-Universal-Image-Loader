@@ -24,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Information for load'n'display image task
- *
+ * 加载图片线程的信息
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  * @see com.nostra13.universalimageloader.utils.MemoryCacheUtils
  * @see DisplayImageOptions
